@@ -69,7 +69,7 @@ def main():
     /path/to/console.py --put-online on|off to start or stop ATK web service"""
     parser = OptionParser(usage=usage)
     parser.add_option( "--create-session", type="string", dest="date",action="store", help="Start new R{c} session by --create-session 2017-04-12")
-    parser.add_option( "--put-online", dest="online",action="store_true",default=False, help="Start|Stop ATK web service with --put-online ")
+    parser.add_option( "--put-online", dest="online",action="store_true",default=False, help="Start ATK web service with --put-online ")
     (options, args) = parser.parse_args()
     if options.date!=None:
         dateobj = datetime.datetime.strptime(options.date,"%Y-%m-%d")
