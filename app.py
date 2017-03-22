@@ -1,4 +1,4 @@
-from flask import Flask, g, render_template
+from flask import Flask, g, render_template, request
 from conf import config
 import os
 import sqlite3 as sql
@@ -17,7 +17,19 @@ def connect_db():
 @app.before_request
 def before_request():
     g.db = connect_db()
-
+    
+@app.route('/submit',methods=['POST', 'GET'])
+def submit():
+    if request.method == 'GET':
+        return render_template('form/form.html')
+    elif request.method == 'POST':
+        kwargs = {
+            'name': request.form['name'],
+            'key': request.form['key'],
+        }
+        
+        return render_template(
+            'form/process.html', **kwargs)
 
 @app.route('/')
 def index():

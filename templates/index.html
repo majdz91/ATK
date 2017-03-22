@@ -1,13 +1,23 @@
 <html>
     <head>
         <title>R{c} ATK</title>
-        <style type="text/css">
-            h1 {
-                color: red;
-            }
-        </style>
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}"/>
     </head>
     <body>
-        <h1>Welcome to ATK!</h1>
+        
+            <div class="container">
+            <div class="jumbotron">
+              <h2>Welcome to refugees{code} attendance record!</h2>
+             
+            </div>
+            <div class="panel panel-default">
+             <div class="panel-body">
+            {% block content %}  
+            <p>register your self by name & key. <a  href="/submit" role="button">Go!</a></p></div>
+            {% endblock %}
+            </div>
+            </div>
+            </div>
+            
     </body>
 </html>
