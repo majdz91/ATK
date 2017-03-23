@@ -1,10 +1,13 @@
+#!/usr/bin/env python
+# this script is the flask interface for the ATK 
 from flask import Flask, g, render_template, request
-from conf import config
+from conf import config , DB
 import os
 import sqlite3 as sql
 app = Flask(__name__)
-
-def main():
+global DBl
+def main(SID):
+    DBl = DB.DBL(SID)
     app.debug = True
     host = os.environ.get('IP', '0.0.0.0')
     port = int(os.environ.get('PORT', 8080))

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# ATK console use to generate session hashes and commit to db
 
 import sqlite3 as sql 
 import sys,os,datetime,time,uuid
@@ -17,7 +18,7 @@ def Create_Session(dateobj):
     for i in range(toolbar_width):
         time.sleep(0.1)
         hashes= Create_Hashes()
-   
+        # writing session data to "hashes.txt"
         file = open("hashes.txt","w")
         for hashe in hashes :
             file.write(hashe)
@@ -31,9 +32,9 @@ def Create_Session(dateobj):
     # submit hashes to DB
     print('submit session')
     time.sleep(0.1)
-    submit(hashes,dateobj)
-    
-    return hashes
+    idse = submit(hashes,dateobj)
+    print(idse)
+    return idse
 
 def Create_Hashes():
     hashs =[]
@@ -61,10 +62,12 @@ def submit(hashs,dateobj):
     except sql.Error as e:
         db.rollback()
         print('[-] Error : ', e.args[0])
-        
+    
+    return max_id
 
 def main():
-    usage = """usage: /path/to/console.py --create-session YYYY-MM-DD after commiting session 
+    global SID
+    usage = """usage: /path/to/console.py --create-session YYYY-MM-DD after commiting session to DB
     /path/to/console.py --put-online  to start or stop ATK web service"""
     parser = OptionParser(usage=usage)
     parser.add_option( "--create-session", type="string", dest="date",action="store", help="Start new R{c} session by --create-session 2017-04-12")
@@ -72,10 +75,13 @@ def main():
     (options, args) = parser.parse_args()
     if options.date!=None:
         dateobj = datetime.datetime.strptime(options.date,"%Y-%m-%d")
-        Create_Session(dateobj)
-    if options.online:
+        SID = Create_Session(dateobj)
+        print('Starting web service on port 8080 ..')
+        time.sleep(0.5)
         import app
-        app.main()
+        app.main(SID)
+    
+        
     if options.online and options.date == None :
         print(parser.usage)
         
