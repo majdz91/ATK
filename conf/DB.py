@@ -16,5 +16,13 @@ class DBL():
         for i in range (config.STU_NUM) :
             self.List[i] = self.List[i][2:10]
         return self.List
+    def Update_Hashes(self,List):
+        self.CUR.execute('UPDATE Hashes SET Hashes=? WHERE S_ID =?',(str(List),self.SID))
+        if self.CON.commit():
+            return True
+        else :
+            return False
+    
+        
     
         

@@ -37,7 +37,7 @@ def submit():
             if kwargs['key'] == List[i] :
                 print('yep')
                 List[i] = List[i].replace(kwargs['key'],'*######*')
-                print(List)
+                DBl.Update_Hashes(List)
                 return render_template(
                 'form/process.html', **kwargs)
         return render_template(
