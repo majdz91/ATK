@@ -6,7 +6,7 @@ from conf import config
 class DBL():
     def __init__(self,sessionid):
         self.SID = sessionid
-        self.CON = sql.connect('pdb.db')
+        self.CON = sql.connect('conf/pdb.db')
         self.CUR = self.CON.cursor()
     def Get_Session_Hashes(self):
         self.result = self.CUR.execute('SELECT Hashes FROM Hashes WHERE S_ID = ?',(self.SID,)).fetchone()[0]

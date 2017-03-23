@@ -5,6 +5,7 @@ import sqlite3 as sql
 import sys,os,datetime,time,uuid
 import generator as genr
 from optparse import OptionParser
+from conf import config
 
 
 def Create_Session(dateobj):
@@ -76,10 +77,15 @@ def main():
     if options.date!=None:
         dateobj = datetime.datetime.strptime(options.date,"%Y-%m-%d")
         SID = Create_Session(dateobj)
-        print('Starting web service on port 8080 ..')
+        f = open('conf/sid.txt','w')
+        f.write(str(SID))
+        f.close()
+        print('Start  web service by "python console.py --put-online"')
         time.sleep(0.5)
+        
+    if options.online :
         import app
-        app.main(SID)
+        app.main()
     
         
     if options.online and options.date == None :
