@@ -1,14 +1,15 @@
 from conf import config 
 from flask_sqlalchemy import SQLAlchemy 
-from flask import Flask
- 
+from flask import Flask , g 
 
 
 
-app = Flask(__name__)
+
+app = Flask(__name__)    
+db = SQLAlchemy()
 #app.config.from_pyfile('URI.cfg')
-app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///pdb.db'
-db = SQLAlchemy(app)
+
+
 
 
 class Students(db.Model):

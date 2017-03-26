@@ -7,14 +7,16 @@ from conf import config
 import os, datetime
 import generator as gen
 from flask_sqlalchemy import SQLAlchemy 
-from flask import Flask
- 
-db = SQLAlchemy()
+
+
+
 app = Flask(__name__)
 app.config['BASIC_AUTH_USERNAME'] = 'admin'
 app.config['BASIC_AUTH_PASSWORD'] = 'pass'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///conf/pdb.db'
 basic_auth = BasicAuth(app)
+DB.db.init_app(app)
 
 
 def main():
@@ -23,7 +25,7 @@ def main():
     host = os.environ.get('IP', '0.0.0.0')
     port = int(os.environ.get('PORT', 5000))
     app.run(host=host, port=port)
-    admin = Admin(app)
+    
 
 
 @app.before_request
