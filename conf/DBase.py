@@ -7,9 +7,6 @@ from flask import Flask , g
 
 app = Flask(__name__)    
 db = SQLAlchemy()
-#app.config.from_pyfile('URI.cfg')
-
-
 
 
 class Students(db.Model):
@@ -29,33 +26,36 @@ class Students(db.Model):
         
 class Sessions(db.Model):
     __tablename__ = 'Sessions'
-    ID = db.Column(db.Integer, primary_key=True)
-    SDate = db.Column(db.DateTime)
-    rel_hash = db.relationship('Hashes',backref='sess_hash',lazy='dynamic')
+    ID = db.Column(db.Integer , autoincrement=True , primary_key=True)
+    SDate = db.Column(db.Date)
+    #rel_hash = db.relationship('Hashes',backef='sess_hash',lazy='dynamic')
     rel_att = db.relationship('Attendance',backref='sess_id',lazy='dynamic')
+    db.__table_args__ = (db.UniqueConstraint('SDate', name='udate'))
     def __init__(self,SDate):
+        
         self.SDate = SDate
         
     def __repr__(self):
-        return '<session date : %r>' % self.SDate
+        return '%r' % self.SDate
         
 class Hashes(db.Model):
     __tablename__ = 'Hashes'
     ID = db.Column(db.Integer , primary_key = True)
-    S_ID = db.Column(db.Integer , db.ForeignKey('Sessions.ID'))
-    Hashes = db.Column(db.Text(255))
+    Hashes = db.Column(db.String(255))
     #Sessions = db.relationship('Sessions', backref=db.backref('ID', lazy='dynamic'))
 
     
-    def __init__(self,S_ID,Hashes,Session):
-        self.S_ID = S_ID
+    def __init__(self,Hashes):
+        
         self.Hashes = Hashes
-        self.Session = Session
+        
     
     def __repr__(self):
         return '<Hashes are : %r>' % self.Hashes
     
-
+ass_tab = db.Table()
+    
+    
         
 class Attendance(db.Model):
     __tablename__ = 'Attendance'
@@ -70,4 +70,8 @@ class Attendance(db.Model):
         self.Attend = Attend
         
 #MetaData.create_all()
-        
+
+def Get_Hashes():
+    h = [] 
+    rv = Hashes.query.get(1)
+    return rv
