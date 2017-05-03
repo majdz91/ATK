@@ -41,7 +41,7 @@ class Sessions(db.Model):
 class Hashes(db.Model):
     __tablename__ = 'Hashes'
     ID = db.Column(db.Integer , primary_key = True)
-    Hashes = db.Column(db.String(255))
+    Hashes = db.Column(db.String(500))
     #Sessions = db.relationship('Sessions', backref=db.backref('ID', lazy='dynamic'))
 
     
@@ -51,7 +51,7 @@ class Hashes(db.Model):
         
     
     def __repr__(self):
-        return '<Hashes are : %r>' % self.Hashes
+        return ' %r' % self.Hashes
     
 ass_tab = db.Table()
     

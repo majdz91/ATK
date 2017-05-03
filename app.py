@@ -4,7 +4,7 @@ from flask import Flask, g, render_template, request , abort
 from flask_basicauth import BasicAuth
 from conf import  DBase as DB
 from conf import config
-import os, datetime , uuid
+import os, datetime ,re 
 import generator as gen
 from flask_sqlalchemy import SQLAlchemy 
 
@@ -17,11 +17,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///conf/pdb.db'
 basic_auth = BasicAuth(app)
 DB.db.init_app(app)
-uid = uuid.uuid4()
+
 
 def main():
-    
-
     host = os.environ.get('IP', '0.0.0.0')
     port = int(os.environ.get('PORT', 5000))
     app.run(host=host, port=port)
@@ -72,20 +70,28 @@ def submit():
                     si = s.ID 
             if si is not None :
                 hashe = DB.Hashes.query.filter_by(ID=si).first()
+                kwargs = {
+                    'name': request.form['name'],
+                    'key': request.form['key'],
+                        }
+                List = DB.Get_Hashes()
+                mylist = str(List).split(',')
                 
-        kwargs = {
-            'name': request.form['name'],
-            'key': request.form['key'],
-        }
-        List = DB.Get_Hashes()
-        print(List)
-        #for i in range (config.STU_NUM):
-          # if kwargs['key'] == List[i] :
-           #    print('yep')
+                for word in mylist :
+                    ed = word[2:-1]
+                    if kwargs['key'] == ed :
+                        return render_template('form/process.html', **kwargs)
+                    
+                return render_template('form/error.html', **kwargs)
+       
+        
+    #    print(li)
+     #   for l in li:
+      #     if kwargs['key'] == l :
+       #        print('yep')
               
                
-        return render_template(
-        'form/process.html', **kwargs)
+        
         
         #return render_template(
          #       'form/hash_error.html', **kwargs)
