@@ -71,7 +71,7 @@ class Attendance(db.Model):
         
 #MetaData.create_all()
 
-def Get_Hashes():
+def Get_Hashes(SI):
     h = [] 
-    rv = Hashes.query.get(1)
+    rv = Hashes.query.get(SI)
     return rv

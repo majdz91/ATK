@@ -74,28 +74,24 @@ def submit():
                     'name': request.form['name'],
                     'key': request.form['key'],
                         }
-                List = DB.Get_Hashes()
+                if len(request.form['key']) > 8 :
+                    return render_template('form/error.html', **kwargs)
+                    
+                List = DB.Get_Hashes(int(si))
                 mylist = str(List).split(',')
                 
-                for word in mylist :
-                    ed = word[2:-1]
+                for i in range(config.STU_NUM) :
+                    ed = mylist[i][2:-1]
                     if kwargs['key'] == ed :
+                        del mylist[i]
+                        hashe.Hashes = hashe.Hashes.replace(ed,'').strip()
+                        DB.db.session.commit()
                         return render_template('form/process.html', **kwargs)
                     
                 return render_template('form/error.html', **kwargs)
        
         
-    #    print(li)
-     #   for l in li:
-      #     if kwargs['key'] == l :
-       #        print('yep')
-              
-               
-        
-        
-        #return render_template(
-         #       'form/hash_error.html', **kwargs)
-
+   
 @app.route('/')
 def index():
     return render_template('index.html')
