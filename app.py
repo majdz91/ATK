@@ -11,8 +11,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 # initilaizing Flask App With SQLAlchemy Object Mapper 
 app = Flask(__name__)
-app.config['BASIC_AUTH_USERNAME'] = 'admin'
-app.config['BASIC_AUTH_PASSWORD'] = 'pass'
+app.config['BASIC_AUTH_USERNAME'] = config.ADMIN
+app.config['BASIC_AUTH_PASSWORD'] = config.PASS
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///conf/pdb.db'
 basic_auth = BasicAuth(app)
@@ -41,8 +41,10 @@ def Manage():
         rv = DB.Sessions.query.all()
         for r in rv : 
             if r.SDate.strftime("%Y-%m-%d") == now.strftime("%Y-%m-%d") :
-                  return render_template('form/error.html', name = "Session is already registered")
-        
+                  back_to_hash = r.ID
+                  rv = DB.Hashes.query.get(back_to_hash)
+                  Has = rv.Hashes
+                  return render_template('form/error.html', name = "Session is already registered, Keys for this session are : " , key=Has)
         sess = DB.Sessions(now)
         hsh = DB.Hashes(str(Hash))
         DB.db.session.add(sess)
@@ -70,22 +72,25 @@ def submit():
                     si = s.ID 
             if si is not None :
                 hashe = DB.Hashes.query.filter_by(ID=si).first()
-                kwargs = {
-                    'name': request.form['name'],
-                    'key': request.form['key'],
-                        }
+                
+                kwargs = {'name': request.form['name'],
+                            'key': request.form['key'],}
+                            
                 if len(request.form['key']) > 8 :
                     return render_template('form/error.html', **kwargs)
                     
                 List = DB.Get_Hashes(int(si))
                 mylist = str(List).split(',')
-                
                 for i in range(config.STU_NUM) :
                     ed = mylist[i][2:-1]
                     if kwargs['key'] == ed :
-                        del mylist[i]
                         hashe.Hashes = hashe.Hashes.replace(ed,'').strip()
+                        Att = DB.Attendance(student_id.ID,si,1)
+                        DB.db.session.add(Att)
                         DB.db.session.commit()
+                        #res = Att.query.join(DB.Students,Att.ST_ID == DB.Students.ID).add_columns(DB.Students.Name).filter(DB.Attendance.ST_ID==DB.Students.ID)
+                        #for row in res:
+                        #    print(row)
                         return render_template('form/process.html', **kwargs)
                     
                 return render_template('form/error.html', **kwargs)
