@@ -4,7 +4,7 @@ from flask import Flask, g, render_template, request , abort
 from flask_basicauth import BasicAuth
 from conf import  DBase as DB
 from conf import config
-import os, datetime ,re 
+import os, datetime 
 import generator as gen
 from flask_sqlalchemy import SQLAlchemy 
 

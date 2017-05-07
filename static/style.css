@@ -1,0 +1,27 @@
+*{
+	box-sizing: border-box;
+}
+.infoContainer{
+	width: 50%;
+	margin: 0 auto;
+	background: #ddd;
+	min-height: 100px;
+	padding: 10px;
+	border-radius: 10px;
+	position: relative;
+	padding-right: 80px;
+	overflow: auto;
+	margin-bottom: 10px;
+}
+.ancher{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	text-align: center;
+	width: 80px;
+	height: 30px;
+	line-height: 30px;
+	border-radius: 5px;
+	background: #999;
+	color: white;
+}
