@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{% block content %}
+        <div class="row">
+            <h3>R{c} Session List :</h3>
+        </div>
+        <div class="row" style="margin-top:20px">
+            <div class="col-md-12">
+            <div class="alert alert-success" role="alert">
+                <div class="infoContainer">
+			<div class="information"><p>{% for hash in h %} <p> {{hash}}</p> {% endfor %}</p></p></div>
+			<a class="ancher" href="#"><i class="fa fa-download" aria-hidden="true"></i><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Download</a>
+		</div>
+		
+            </div></div>
+        </div>
+    </div>
+{% endblock %}
+  

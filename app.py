@@ -16,6 +16,7 @@ app.config['BASIC_AUTH_PASSWORD'] = config.PASS
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///conf/pdb.db'
 basic_auth = BasicAuth(app)
+
 DB.db.init_app(app)
 
 
@@ -24,8 +25,6 @@ def main():
     port = int(os.environ.get('PORT', 5000))
     app.run(host=host, port=port)
     
-
-
 @app.before_request
 def before_request():
     pass
@@ -33,28 +32,41 @@ def before_request():
 @app.route('/Manage',methods=['POST','GET']) 
 @basic_auth.required
 def Manage():
-    if request.method == 'GET':
+    #way =  request.args.get('close')
+    
+    if request.method == 'GET' :
         return render_template('form/Start.html') 
+    
     elif request.method == 'POST':
-        now = datetime.date.today()
-        Hash = gen.generate()
-        rv = DB.Sessions.query.all()
-        for r in rv : 
-            if r.SDate.strftime("%Y-%m-%d") == now.strftime("%Y-%m-%d") :
-                  back_to_hash = r.ID
-                  rv = DB.Hashes.query.get(back_to_hash)
-                  Has = rv.Hashes
-                  return render_template('form/error.html', name = "Session is already registered, Keys for this session are : " , key=Has)
-        sess = DB.Sessions(now)
-        hsh = DB.Hashes(str(Hash))
-        DB.db.session.add(sess)
-        DB.db.session.add(hsh)
-        DB.db.session.commit()
-        DB.db.session.flush()
-        return render_template('form/Done.html', h = Hash )
+        if request.form['cmd'] == 'create':
+            now = datetime.date.today()
+            Hash = gen.generate()
+            rv = DB.Sessions.query.all()
+            for r in rv : 
+                if r.SDate.strftime("%Y-%m-%d") == now.strftime("%Y-%m-%d") :
+                      back_to_hash = r.ID
+                      rc = DB.Hashes.query.get(back_to_hash)
+                      Has = rc.Hashes
+                      return render_template('form/error.html', name = "Session is already registered, Keys for this session are : " , key=Has)
+            sess = DB.Sessions(now)
+            hsh = DB.Hashes(str(Hash))
+            DB.db.session.add(sess)
+            DB.db.session.add(hsh)
+            DB.db.session.commit()
+            DB.db.session.flush()
+            return render_template('form/Done.html', h = Hash )
+        if request.form['cmd']=='close': 
+            now = datetime.date.today()
+            rv = DB.Sessions.query.all()
+            for r in rv :
+                if r.SDate.strftime("%Y-%m-%d") == now.strftime("%Y-%m-%d") :
+                    sid = r.ID
+                    res = DB.Attendance.query.join(DB.Students,DB.Attendance.ST_ID == DB.Students.ID).add_columns(DB.Students.Name).filter(DB.Attendance.ST_ID==DB.Students.ID).filter(DB.Attendance.S_ID==sid)
+                    for row in res: 
+                        print(row)
+            return render_template('form/close.html',h=res.template_name_or_list)
+                    
         
-        
-          
         
 @app.route('/submit',methods=['POST', 'GET'])
 def submit():
@@ -88,9 +100,6 @@ def submit():
                         Att = DB.Attendance(student_id.ID,si,1)
                         DB.db.session.add(Att)
                         DB.db.session.commit()
-                        #res = Att.query.join(DB.Students,Att.ST_ID == DB.Students.ID).add_columns(DB.Students.Name).filter(DB.Attendance.ST_ID==DB.Students.ID)
-                        #for row in res:
-                        #    print(row)
                         return render_template('form/process.html', **kwargs)
                     
                 return render_template('form/error.html', **kwargs)
@@ -102,6 +111,6 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
+   
     main()
-    
     
