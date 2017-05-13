@@ -62,9 +62,7 @@ def Manage():
                 if r.SDate.strftime("%Y-%m-%d") == now.strftime("%Y-%m-%d") :
                     sid = r.ID
                     res = DB.Attendance.query.join(DB.Students,DB.Attendance.ST_ID == DB.Students.ID).add_columns(DB.Students.Name).filter(DB.Attendance.ST_ID==DB.Students.ID).filter(DB.Attendance.S_ID==sid)
-                    for row in res: 
-                        print(row)
-            return render_template('form/close.html',h=res.template_name_or_list)
+            return render_template('form/close.html',h=res)
                     
         
         
